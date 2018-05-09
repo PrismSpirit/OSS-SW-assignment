@@ -11,6 +11,7 @@ def create_db():
                 due text not null,
                 finished integer default 0);"""
     cur.execute(create_table)
+    conn.commit()
     conn.close()
 
 def run_program():
@@ -49,7 +50,19 @@ def list_todo():
     conn.close()
 
 def modify_todo():
-    pass
+    conn = sqlite3.connect("todo.db")
+    cur = conn.cursor()
+    cur.execute("select * from todo where 1")
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
+    index = input("Record id? ")
+    what = input("Todo? ")
+    due = input("Due date? ")
+    finished = input("Finished (1: yes, 2: no)? ")
+    cur.execute("update todo set what = ?, due = ?, finished = ? where id = ?", (what, due, finished, index,))
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     create_db()
