@@ -1,18 +1,18 @@
 import sqlite3
 
 def create_db():
-    conn = sqlite3.connect("todo.db")
+    conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
     create_table = """create table if not exists todo(
                 id integer primary key autoincrement,
                 what text not null,
                 due text not null,
-                finished integer default 0)"""
+                finished integer)"""
     cur.execute(create_table)
-    conn.commit()
     conn.close()
 
 def run_program():
+    create_db()
     while True:
         print("Choose what to do:")
         selection = input("(a: Add todo, l: List todo, m: Modify todo, q: Quit)? ")
@@ -32,14 +32,14 @@ def run_program():
 def add_todo():
     what = input("Todo? ")
     due = input("Due date? ")
-    conn = sqlite3.connect("todo.db")
+    conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
-    cur.execute("insert into todo (what, due) values (?, ?)", (what, due,))
+    cur.execute("insert into todo (what, due, finished) values (?, ?, ?)", (what, due, 0,))
     conn.commit()
     conn.close()
 
 def list_todo():
-    conn = sqlite3.connect("todo.db")
+    conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
     cur.execute("select * from todo where 1")
     rows = cur.fetchall()
@@ -48,7 +48,7 @@ def list_todo():
     conn.close()
 
 def modify_todo():
-    conn = sqlite3.connect("todo.db")
+    conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
     cur.execute("select * from todo where 1")
     rows = cur.fetchall()
@@ -63,5 +63,5 @@ def modify_todo():
     conn.close()
 
 if __name__ == "__main__":
-    create_db()
     run_program()
+    input_data_test()
