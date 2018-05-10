@@ -2,14 +2,12 @@ import sqlite3
 
 def create_db():
     conn = sqlite3.connect("todo.db")
-
     cur = conn.cursor()
-
     create_table = """create table if not exists todo(
                 id integer primary key autoincrement,
                 what text not null,
                 due text not null,
-                finished integer default 0);"""
+                finished integer default 0)"""
     cur.execute(create_table)
     conn.commit()
     conn.close()
@@ -46,7 +44,7 @@ def list_todo():
     cur.execute("select * from todo where 1")
     rows = cur.fetchall()
     for row in rows:
-        print(row)
+        print(row[0], row[1], row[2], row[3])
     conn.close()
 
 def modify_todo():
