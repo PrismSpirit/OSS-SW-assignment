@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def create_db():
     conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
@@ -11,14 +12,17 @@ def create_db():
     cur.execute(create_table)
     conn.close()
 
+
 def run_program():
     create_db()
     while True:
-        selection = input("Choose what to to:\n(a: Add todo, l: List todo, m: Modify todo, q: Quit)? ")
+        selection = input(
+            "Choose what to to:\n(a: Add todo, l: List todo, m: Modify todo, q: Quit)? ")
         if selection == 'a':
             add_todo()
         elif selection == 'l':
-            sub_selection = input("What items are you looking at (a: All, f: Finished only)? ")
+            sub_selection = input(
+                "What items are you looking at (a: All, f: Finished only)? ")
             if sub_selection == 'a':
                 list_todo(filter_todo())
             elif sub_selection == 'f':
@@ -27,6 +31,7 @@ def run_program():
             modify_todo()
         elif selection == 'q':
             break
+
 
 def filter_todo(filter=None):
     todo_list = []
@@ -43,14 +48,17 @@ def filter_todo(filter=None):
     conn.close()
     return todo_list
 
+
 def add_todo():
     what = input("Todo? ")
     due = input("Due date? ")
     conn = sqlite3.connect("lab.db")
     cur = conn.cursor()
-    cur.execute("insert into todo (what, due, finished) values (?, ?, ?)", (what, due, 0,))
+    cur.execute(
+        "insert into todo (what, due, finished) values (?, ?, ?)", (what, due, 0,))
     conn.commit()
     conn.close()
+
 
 def list_todo(data):
     print("ID  TODO   DATE   FINISHED?")
@@ -58,6 +66,7 @@ def list_todo(data):
     for _ in data:
         print(_[0], _[1], _[2], _[3])
     print()
+
 
 def modify_todo():
     conn = sqlite3.connect("lab.db")
@@ -70,9 +79,11 @@ def modify_todo():
     what = input("Todo? ")
     due = input("Due date? ")
     finished = input("Finished (1: yes, 2: no)? ")
-    cur.execute("update todo set what = ?, due = ?, finished = ? where id = ?", (what, due, finished, index,))
+    cur.execute("update todo set what = ?, due = ?, finished = ? where id = ?",
+                (what, due, finished, index,))
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     run_program()
