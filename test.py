@@ -14,20 +14,34 @@ def create_db():
 def run_program():
     create_db()
     while True:
-        print("Choose what to do:")
-        selection = input("(a: Add todo, l: List todo, m: Modify todo, q: Quit)? ")
-        print()
+        selection = input("Choose what to to:\n(a: Add todo, l: List todo, m: Modify todo, q: Quit)? ")
         if selection == 'a':
             add_todo()
-            print()
         elif selection == 'l':
-            list_todo()
-            print()
+            sub_selection = input("What items are you looking at (a: All, f: Finished only)? ")
+            if sub_selection == 'a':
+                list_todo(filter_todo())
+            elif sub_selection == 'f':
+                list_todo(filter_todo(sub_selection))
         elif selection == 'm':
             modify_todo()
-            print()
         elif selection == 'q':
             break
+
+def filter_todo(filter=None):
+    todo_list = []
+    conn = sqlite3.connect("lab.db")
+    cur = conn.cursor()
+    if filter == None:
+        sql = "select * from todo where 1"
+    elif filter == 'f':
+        sql = "select * from todo where finished = 1"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    for row in rows:
+        todo_list.append([row[0], row[1], row[2], row[3]])
+    conn.close()
+    return todo_list
 
 def add_todo():
     what = input("Todo? ")
@@ -38,14 +52,12 @@ def add_todo():
     conn.commit()
     conn.close()
 
-def list_todo():
-    conn = sqlite3.connect("lab.db")
-    cur = conn.cursor()
-    cur.execute("select * from todo where 1")
-    rows = cur.fetchall()
-    for row in rows:
-        print(row[0], row[1], row[2], row[3])
-    conn.close()
+def list_todo(data):
+    print("ID  TODO   DATE   FINISHED?")
+    print("---------------------------")
+    for _ in data:
+        print(_[0], _[1], _[2], _[3])
+    print()
 
 def modify_todo():
     conn = sqlite3.connect("lab.db")
